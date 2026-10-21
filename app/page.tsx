@@ -7,6 +7,7 @@ import {convertLegacy} from '../lib/legacy-import';
 import Ledger,{type LibraryPhoto} from '../components/ledger';
 import {download,makeBackup,portableHtml,readImport,uploadDataImage} from '../lib/backup';
 import './legacy.css';
+import './carrot-theme.css';
 export default function Home(){
  const [session,setSession]=useState<Session|null>(null),[loading,setLoading]=useState(true),[pcs,setPcs]=useState<PC[]>([]),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[email,setEmail]=useState(''),[password,setPassword]=useState('');
  useEffect(()=>{if(!db){setLoading(false);return;}db.auth.getSession().then(({data})=>{setSession(data.session);setLoading(false)});const {data}=db.auth.onAuthStateChange((_e,s)=>{setSession(s);setPcs([])});return()=>data.subscription.unsubscribe()},[]);
