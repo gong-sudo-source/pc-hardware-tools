@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="576" height="576" viewBox="0 0 576 576" shape-rendering="crispEdges">
+  <defs>
+    <g id="carrot">
+      <path fill="#73986c" d="M10 0h3v6h-3zM16 3h3v3h-3zM13 6h3v3h-3zM7 3h3v3H7z"/>
+      <path fill="#d98d50" d="M7 9h9v3h3v6h-3v3h-3v3h-3v3H7v3H4v-9H1v-6h3v-3h3z"/>
+      <path fill="#edba87" d="M7 12h6v3H7zM4 15h3v6H4z"/>
+    </g>
+    <g id="cpu">
+      <path fill="#a5a193" d="M3 0h2v4H3zM8 0h2v4H8zM13 0h2v4h-2zM18 0h2v4h-2zM3 22h2v4H3zM8 22h2v4H8zM13 22h2v4h-2zM18 22h2v4h-2zM0 5h4v2H0zM0 10h4v2H0zM0 15h4v2H0zM0 20h4v2H0zM22 5h4v2h-4zM22 10h4v2h-4zM22 15h4v2h-4zM22 20h4v2h-4z"/>
+      <path fill="#8496a1" d="M3 3h20v20H3z"/><path fill="#c0c9cc" d="M6 6h14v14H6z"/><path fill="#95a6b0" d="M9 9h8v8H9z"/>
+    </g>
+    <g id="ram">
+      <path fill="#86a07b" d="M0 4h30v13H0z"/><path fill="#697f64" d="M3 7h5v7H3zM11 7h5v7h-5zM19 7h5v7h-5z"/><path fill="#c5ac75" d="M2 17h4v3H2zM8 17h4v3H8zM14 17h4v3h-4zM20 17h4v3h-4zM26 17h3v3h-3z"/>
+    </g>
+    <g id="gpu">
+      <path fill="#899995" d="M2 4h30v17H2zM0 2h3v24H0z"/><path fill="#bdc9bf" d="M6 7h9v10H6zM19 7h9v10h-9z"/><path fill="#7b8f83" d="M9 8h3v8H9zM7 11h7v3H7zM22 8h3v8h-3zM20 11h7v3h-7z"/><path fill="#c5ac75" d="M7 21h13v3H7z"/>
+    </g>
+    <g id="ssd">
+      <path fill="#a5a5af" d="M2 0h20v28H2z"/><path fill="#d4d1cd" d="M5 4h14v16H5z"/><path fill="#ab9ba2" d="M8 8h8v3H8zM8 14h5v2H8z"/><path fill="#baa36e" d="M5 24h5v4H5zM13 24h6v4h-6z"/>
+    </g>
+  </defs>
+  <g opacity=".20">
+    <use href="#carrot" x="34" y="32"/>
+    <use href="#cpu" x="322" y="34"/>
+    <use href="#ram" x="176" y="182"/>
+    <use href="#gpu" x="464" y="180"/>
+    <use href="#ssd" x="36" y="320"/>
+    <use href="#carrot" x="322" y="320"/>
+    <use href="#cpu" x="178" y="466"/>
+    <use href="#ram" x="464" y="470"/>
+  </g>
+</svg>
