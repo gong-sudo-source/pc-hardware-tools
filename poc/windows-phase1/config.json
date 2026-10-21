@@ -1,0 +1,8 @@
+{
+  "phase": 1,
+  "automatic_collection_enabled": false,
+  "policy_status": "unverified",
+  "policy_checked_on": "2026-10-11",
+  "browser_access_status": "manual_extension_verified_only",
+  "reason": "공식 약관 원문 403, robots 원문 미확인. 자동 탐색 구현 없음."
+}

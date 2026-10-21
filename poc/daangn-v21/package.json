@@ -1,0 +1,1 @@
+{"name":"daangn-manual-poc","private":true,"version":"0.1.0","scripts":{"test":"node --test tests/*.test.cjs"},"devDependencies":{"linkedom":"0.18.12"}}

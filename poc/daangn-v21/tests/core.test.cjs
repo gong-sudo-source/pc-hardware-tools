@@ -1,0 +1,7 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const C=require('../extension/core.js');
+test('가격: 원, 만원, 무료, 미확정 구분',()=>{assert.equal(C.price('150,000원').amount,150000);assert.equal(C.price('1.5만원').amount,15000);assert.equal(C.price('나눔').amount,0);assert.equal(C.price('가격 협의').amount,null)});
+test('외부 URL/검색 제외, 쿼리와 슬래시 중복 제거',()=>{assert.equal(C.identity('https://www.daangn.com/kr/buy-sell/ssd-ab12/?x=1').id,C.identity('https://daangn.com/kr/buy-sell/ssd-ab12/').id);assert.equal(C.identity('https://evil.example/articles/123'),null);assert.equal(C.identity('https://www.daangn.com/kr/buy-sell/?search=SSD'),null)});
+test('숫자 ID 신구 URL 대응',()=>assert.equal(C.identity('https://www.daangn.com/articles/123').id,C.identity('https://www.daangn.com/kr/buy-sell/ssd-123/').id));
+test('재추출 누락으로 본문/가격 손실하지 않음',()=>{const p={description:'본문',price:{amount:10},images:['a'],captured_at:'a'},n={description:null,price:{amount:null},images:['b'],captured_at:'b'};const m=C.merge(p,n);assert.equal(m.description,'본문');assert.equal(m.price.amount,10);assert.deepEqual(m.images,['a','b'])});
+test('관측과 고유 매물 및 페이지 실패 분리, 미검증은 null',()=>{const x={id:'1',title:'a',region:'b',canonical_url:'c',representative_image:'d',price:{amount:0}};const m=C.metrics([{mode:'list',items:[x,x]},{mode:'list',items:[],error:'blocked'}]);assert.equal(m.list.unique_listings,1);assert.equal(m.list.observations,2);assert.equal(m.list.page_errors,1);assert.equal(m.detail.complete.percent,null)});

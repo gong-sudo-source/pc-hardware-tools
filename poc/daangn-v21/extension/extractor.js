@@ -1,0 +1,28 @@
+(function(root){
+ function extract(mode){
+ const C=root.DaangnCore,now=new Date().toISOString();
+ const text=e=>(e?.innerText||e?.textContent||'').trim();
+ const shown=e=>!!e&&e.getClientRects().length>0&&getComputedStyle(e).visibility!=='hidden'&&getComputedStyle(e).display!=='none';
+ const http=raw=>{if(!raw||typeof raw!=='string')return null;try{const u=new URL(raw,location.href);return u.protocol==='https:'?u.href:null}catch{return null}};
+ const imageURL=e=>{const direct=http(e.currentSrc||e.getAttribute('src'));if(direct)return direct;const candidates=(e.getAttribute('srcset')||'').split(',').map(s=>s.trim().split(/\s+/)).sort((a,b)=>(parseFloat(b[1])||0)-(parseFloat(a[1])||0));for(const [raw] of candidates){const url=http(raw);if(url)return url;}return null;};
+ const images=el=>[...new Set([...el.querySelectorAll('img')].filter(shown).map(imageURL).filter(Boolean))];
+ const priceOf=el=>{for(const e of el.querySelectorAll('[itemprop="price"],h3,strong,b,p,span,div')){if(!shown(e))continue;const t=text(e);if(t.length<40){const p=C.price(t);if(p.amount!==null)return p}}return C.price('')};
+ const regionOf=el=>{const e=[...el.querySelectorAll('[itemprop="addressLocality"],[data-testid*="region"],span,p,div')].find(e=>shown(e)&&text(e).length<80&&!/[\r\n]/.test(text(e))&&!/매너온도|°C/.test(text(e))&&/(?:동|읍|면|리|구)(?:\s|$|·)/.test(text(e))&&!/원/.test(text(e)));return e?text(e).split('·')[0].trim():null};
+ const build=(id,el,title)=>{const photos=images(el);return {...id,schema_version:'1.0',source:'daangn',captured_at:now,first_seen_at:now,title:title||null,price:priceOf(el),region:regionOf(el),representative_image:photos[0]||null,images:photos,description:null,provenance:{mode,page_url:location.href,method:'rendered-dom',extractor_version:'0.1.3'},warnings:[],diagnostics:{image_elements:el.querySelectorAll('img').length,visible_image_elements:[...el.querySelectorAll('img')].filter(shown).length,images_with_srcset:[...el.querySelectorAll('img')].filter(e=>e.hasAttribute('srcset')).length}}};
+ if(!C.hostOK(location.hostname)||location.protocol!=='https:')throw Error('HTTPS 당근 공개 페이지에서만 실행하세요.');
+ if(/captcha|접근이 제한|비정상적인 접근|로그인이 필요/.test(text(document.body).slice(0,1500)))throw Error('접근 제한 또는 로그인 안내가 있습니다. 추출을 중단합니다.');
+ let items=[];
+ if(mode==='list'){
+ const seen=new Set();for(const a of document.querySelectorAll('a[href]')){const id=C.identity(a.href);if(!id||seen.has(id.id)||!shown(a))continue;seen.add(id.id);let card=a;for(let depth=0;depth<3&&card.parentElement;depth++){if(priceOf(card).amount!==null&&card.querySelector('img'))break;const parent=card.parentElement;const ids=new Set([...parent.querySelectorAll('a[href]')].map(x=>C.identity(x.href)?.id).filter(Boolean));if(ids.size!==1)break;card=parent;}
+ const heading=[...card.querySelectorAll('h2,h3,h4,[itemprop="name"]')].find(shown);const lines=text(a).split('\n').map(x=>x.trim()).filter(Boolean);const title=text(heading)||lines.find(x=>C.price(x).amount===null&&!/^(관심|채팅|조회)/.test(x))||card.querySelector('img')?.alt;const item=build(id,card,title);item.warnings.push(...C.missing(item,mode).map(x=>'missing:'+x));items.push(item);if(items.length>=30)break;}
+ }else if(mode==='detail'){
+ const id=C.identity(location.href);if(!id)throw Error('매물 상세 URL을 직접 열어주세요.');const heading=[...document.querySelectorAll('h1')].find(shown);const area=heading?.closest('article')||document.querySelector('main');if(!heading||!area)throw Error('상세 제목/본문 영역을 찾지 못했습니다.');
+ // Only visible semantic description fields; do not read hydration data or private APIs.
+ const content=heading.closest('section')||area;let desc=[...content.querySelectorAll('[itemprop="description"],[data-testid="article-description"],[data-testid="description"]')].find(shown);
+ const item=build(id,area,text(heading));item.price=priceOf(content);const regionCandidates=[...area.querySelectorAll('a,span,p,div')].filter(e=>shown(e)&&!e.children.length&&!(e.closest('a[href]')&&C.identity(new URL(e.closest('a[href]').getAttribute('href'),location.href).href))&&text(e).length<80&&!/[\r\n]/.test(text(e))&&/(?:동|읍|면|리)(?:\s|$)/.test(text(e)));item.region=text(regionCandidates[0])||null;const galleryImages=[...area.querySelectorAll('img')].filter(shown).filter(e=>{const link=e.closest('a[href]');const other=link?C.identity(new URL(link.getAttribute('href'),location.href).href):null;return !other}).map(imageURL).filter(url=>{try{return new URL(url).pathname.includes('/origin/article/')}catch{return false}});const keys=new Set();item.images=galleryImages.filter(url=>{const u=new URL(url),key=u.origin+u.pathname;if(keys.has(key))return false;keys.add(key);return true});item.representative_image=item.images[0]||null;item.warnings.push('photos:article-path-filter-related-unlinked-images-still-unverified');if(!desc){const candidates=[...content.querySelectorAll('p')].filter(e=>shown(e)&&text(e).length>=30&&!e.closest('nav,aside,footer'));if(candidates.length===1){desc=candidates[0];item.warnings.push('description:single-visible-paragraph-fallback')}else item.warnings.push('description:ambiguous-or-missing');}
+ item.description=desc?text(desc):null;item.warnings.push('photos:visible-dom-only-gallery-completeness-unverified');if(!heading.closest('article'))item.warnings.push('scope:main-fallback-may-include-related-images');item.warnings.push(...C.missing(item,mode).map(x=>'missing:'+x));items=[item];
+ }else throw Error('알 수 없는 추출 모드');
+ return {attempt_id:crypto.randomUUID(),mode,captured_at:now,page_url:location.href,items,error:items.length?null:'공개 DOM에서 매물 카드를 찾지 못했습니다.'};
+ }
+ root.DaangnExtractor={extract};
+})(globalThis);

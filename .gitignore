@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.env*
+!.env.example
+.vercel/
+*.tsbuildinfo
+__pycache__/
+.venv/
+*.sqlite*
+poc/**/samples/
+exports/

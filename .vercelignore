@@ -1,0 +1,11 @@
+sources/
+poc/
+.env*
+!.env.example
+node_modules/
+.next/
+*.png
+*.tsbuildinfo
+supabase/local-*.sql
+supabase/authorize-owner.sql
+.git/
