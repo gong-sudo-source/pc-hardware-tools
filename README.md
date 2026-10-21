@@ -7,7 +7,7 @@ V2 클라우드 장부와 V2.1 수동 매물 추출 PoC의 공개 소스입니�
 - 수동 Chrome 확장: `poc/daangn-v21/extension`.
 - Windows Phase 1 검증기: `poc/windows-phase1`.
 - 비밀번호, 실제 환경변수, 사용자 사진, 매물 실측 JSON/HTML은 포함하지 않았습니다. 공유용 사진 카탈로그는 빈 배열입니다.
-- GitHub와 Vercel 자동 배포 연결은 아직 설정하지 않았습니다. 소스 업로드가 기존 운영 사이트를 바꾸지는 않습니다.
+- GitHub 커밋 fa8cc8d의 Vercel 배포 성공을 2026-10-21에 확인했습니다. 변경을 올린 뒤에는 커밋의 Vercel 상태에서 배포 성공 여부를 확인하세요.
 - 기존 Supabase에 초기 DB SQL을 다시 실행하지 마세요.
 
 아래는 원래 프로젝트의 운영·설계 문서입니다. 로컬 경로와 실측 자료 참조는 원본 환경에만 있으며 공개 저장소에는 해당 자료를 포함하지 않습니다.
@@ -43,7 +43,7 @@ Windows PowerShell에서는 `Copy-Item .env.example .env.local`을 사용하세�
 
 현재 운영 주소: https://carrot-pc-ledger.vercel.app/
 
-Vercel 프로젝트 `jig2/carrot-pc-ledger`에 CLI로 첫 운영 배포를 완료했습니다. 기존 Supabase를 사용하므로 이전 계정으로 로그인하면 같은 기록을 불러옵니다. GitHub 자동 배포 연결은 아직 설정하지 않았습니다. 현재는 코드 수정 후 검사하고 프로젝트 루트에서 `vercel deploy --prod`로 재배포합니다. `.vercelignore`로 로컬 환경 파일·참조 자료·작업용 스크린샷·관리용 SQL을 업로드에서 제외합니다. DB migration은 앱 배포와 별개이며 재배포할 때 초기 SQL을 재실행하지 않습니다.
+Vercel 프로젝트 `jig2/carrot-pc-ledger`에 CLI로 첫 운영 배포를 완료했습니다. 기존 Supabase를 사용하므로 이전 계정으로 로그인하면 같은 기록을 불러옵니다. 2026-10-21 GitHub 커밋의 Vercel 배포 성공을 확인했습니다. 코드 수정 후 검사하고 커밋의 Vercel 배포 상태를 확인하세요. CLI 재배포도 가능합니다. `.vercelignore`로 로컬 환경 파일·참조 자료·작업용 스크린샷·관리용 SQL을 업로드에서 제외합니다. DB migration은 앱 배포와 별개이며 재배포할 때 초기 SQL을 재실행하지 않습니다.
 
 1. 이 프로젝트를 개인 GitHub 저장소에 올립니다. `sources/`는 읽기 전용 참조 자료이며 배포할 필요가 없습니다. `.env.local`은 커밋하지 마세요. `pnpm-lock.yaml` 또는 `package-lock.json`은 커밋합니다.
 2. Vercel에서 저장소를 Import합니다. Framework는 Next.js, Root Directory는 이 앱 폴더입니다.
